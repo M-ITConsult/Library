@@ -15,7 +15,7 @@ import java.util.Scanner;
 
 public class Main {
 static Scanner sc = new Scanner(System.in);
-    public static void AjouterUnClient(){
+    public static void AjouterUnClient() {
         SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
         Session session = sessionFactory.openSession();
         Transaction tx;
@@ -78,7 +78,7 @@ static Scanner sc = new Scanner(System.in);
             sessionFactory.close();
         }
     }
-    public static void SupprimerUnClient(){
+    public static void SupprimerUnClient() {
         SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
         Session session = sessionFactory.openSession();
         Transaction tx;
@@ -118,7 +118,7 @@ static Scanner sc = new Scanner(System.in);
             sessionFactory.close();
         }
     }
-    public static void ConsulterListeClients(){
+    public static void ConsulterListeClients() {
         SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
         Session session = sessionFactory.openSession();
 
@@ -152,7 +152,7 @@ static Scanner sc = new Scanner(System.in);
             sessionFactory.close();
         }
     }
-    public static void AjouterUnAuteur(){
+    public static void AjouterUnAuteur() {
 
         SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
         Session session = sessionFactory.openSession();
@@ -191,8 +191,43 @@ static Scanner sc = new Scanner(System.in);
             sessionFactory.close();
         }
     }
-    public static void SupprimerUnAuteur(){}
-    public static void ConsulterListeAuteur(){
+    public static void SupprimerUnAuteur() {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx;
+
+        System.out.println("Suppression de l'auteur");
+        System.out.print("Entrez l'ID de l'auteur à supprimer: ");
+        long idRemove = sc.nextLong();
+
+        // Suppression de l'auteur
+        Auteur auteur = new Auteur();
+        auteur.setId(idRemove);
+
+        try {
+
+            // Transaction Hibernate
+            tx = session.beginTransaction();
+
+            // Enregistrement des entités dans la BD
+            session.remove(auteur);
+            session.flush();
+
+            // Validation de la transaction
+            tx.commit();
+            System.out.println("Auteur supprimé!");
+        } catch (Exception e) {
+            // En cas d'erreurs, annuler la transaction
+            if (session.getTransaction() !=null) {
+                session.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
+        }
+    }
+    public static void ConsulterListeAuteur() {
 
         SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
         Session session = sessionFactory.openSession();
@@ -225,7 +260,7 @@ static Scanner sc = new Scanner(System.in);
             sessionFactory.close();
         }
     }
-    public static void AjouterUnLivre(){
+    public static void AjouterUnLivre() {
         SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
         Session session = sessionFactory.openSession();
 
@@ -276,7 +311,7 @@ static Scanner sc = new Scanner(System.in);
             sessionFactory.close();
         }
     }
-    public static void SupprimerUnLivre(){
+    public static void SupprimerUnLivre() {
         SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
         Session session = sessionFactory.openSession();
         Transaction tx;
@@ -317,7 +352,7 @@ static Scanner sc = new Scanner(System.in);
             sessionFactory.close();
         }
     }
-    public static void ConsulterListeLivres(){
+    public static void ConsulterListeLivres() {
 
         SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
         Session session = sessionFactory.openSession();
@@ -325,12 +360,13 @@ static Scanner sc = new Scanner(System.in);
         Transaction tx;
 
         List<Livre> livres = session.createQuery("FROM Livre", Livre.class).getResultList();
+        List<Auteur> auteurs = session.createQuery("FROM Auteur", Auteur.class).getResultList();
 
         System.out.println("Liste des livres: \n");
         for (Livre livre : livres) {
             System.out.printf("ISBN: %s%n",livre.getISBN());
-            for (Auteur auteur : livre.getAuteurList()) {
-                System.out.printf("Auteur: %s%s%n",auteur.getNom(),auteur.getPrenom());
+            for (Auteur auteur : auteurs) {
+                System.out.printf("Auteur: %s %s%n",auteur.getNom(),auteur.getPrenom());
             }
             System.out.printf("Titre: %s%n", livre.getTitre());
             System.out.printf("Date d'achat: %s%n\n", livre.getDateAchat());
@@ -379,7 +415,7 @@ static Scanner sc = new Scanner(System.in);
                 case "2" -> SupprimerUnClient();
                 case "3" -> ConsulterListeClients();
                 case "4" -> AjouterUnAuteur();
-//                case "5" -> AjouterUnClient();
+                case "5" -> SupprimerUnAuteur();
                 case "6" -> ConsulterListeAuteur();
                 case "7" -> AjouterUnLivre();
                 case "8" -> SupprimerUnLivre();
