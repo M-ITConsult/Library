@@ -392,13 +392,19 @@ static Scanner sc = new Scanner(System.in);
 
         Transaction tx;
 
-        List<Livre> livres = session.createQuery("FROM Livre", Livre.class).getResultList();
+        List<Client> emprunt = session.createQuery("SELECT DISTINCT c FROM Client c JOIN c.livres l", Client.class).getResultList();
 
         System.out.println("Liste des livres empruntés: \n");
-        livres.forEach(l -> System.out.printf("""
-                ISBN: %s
-                Emprunteur: %s%n
-                """, l.getISBN(), l.getClients()));
+        for (Client client : emprunt) {
+                System.out.printf("""
+                Emprunteur: %s %s%n
+                """, client.getPrenom(), client.getNom());
+
+                for (Livre livre : client.getLivres()) {
+                    System.out.printf("Livre: %s, ISBN - %d%n", livre.getTitre(), livre.getISBN());
+                }
+        }
+
         try {
             // Transaction Hibernate
             tx = session.beginTransaction();
