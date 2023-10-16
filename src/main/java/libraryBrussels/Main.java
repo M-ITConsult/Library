@@ -8,11 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -388,6 +385,83 @@ static Scanner sc = new Scanner(System.in);
             sessionFactory.close();
         }
     }
+    public static void LivresEmprunte() {
+
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+
+        Transaction tx;
+
+        List<Livre> livres = session.createQuery("FROM Livre", Livre.class).getResultList();
+
+        System.out.println("Liste des livres empruntés: \n");
+        livres.forEach(l -> System.out.printf("""
+                ISBN: %s
+                Emprunteur: %s%n
+                """, l.getISBN(), l.getClients()));
+        try {
+            // Transaction Hibernate
+            tx = session.beginTransaction();
+
+            // Validation de la transaction
+            tx.commit();
+        } catch (Exception e) {
+            // En cas d'erreurs, annuler la transaction
+            if (session.getTransaction() !=null) {
+                session.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
+        }
+    }
+    public static void EmprunteUnLivre() {
+
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+
+        Transaction tx;
+
+        System.out.print("Sélectionné l'ID du client qui emprunte le livre: ");
+        long idCust = sc.nextLong();
+
+        Client client = session.get(Client.class, idCust);
+
+        System.out.print("Entrez l'ID du livre à emprunter: ");
+        long idBook = sc.nextLong();
+        sc.nextLine();
+
+        Livre livre = session.get(Livre.class, idBook);
+
+        if (client != null && livre != null) {
+
+            livre.getClients().add(client);
+
+            System.out.printf("Livre emprunté par %s %s",client.getPrenom(),client.getNom());
+        } else {
+            System.out.println("Client ou Livre non trouvé.");
+        }
+
+        try {
+            // Transaction Hibernate
+            tx = session.beginTransaction();
+
+            session.persist(livre);
+
+            // Validation de la transaction
+            tx.commit();
+        } catch (Exception e) {
+            // En cas d'erreurs, annuler la transaction
+            if (session.getTransaction() !=null) {
+                session.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
+        }
+    }
 
 
     public static void main(String[] args) throws SQLException {
@@ -405,7 +479,9 @@ static Scanner sc = new Scanner(System.in);
                     7. Ajouter un livre
                     8. Supprimer un livre
                     9. Listes des livres
-                    10. Quitter
+                    10. Emprunt d'un livre
+                    11. Liste livres empruntés
+                    12. Quitter
                     Enter your choice:
                     """ );
             String choice = sc.next();
@@ -420,7 +496,9 @@ static Scanner sc = new Scanner(System.in);
                 case "7" -> AjouterUnLivre();
                 case "8" -> SupprimerUnLivre();
                 case "9" -> ListesLivres();
-                case "10" -> {
+                case "10" -> EmprunteUnLivre();
+                case "11" -> LivresEmprunte();
+                case "12" -> {
                     System.out.println("Merci et aurevoir :)");
                     System.exit(0);
                 }
