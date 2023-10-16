@@ -4,7 +4,9 @@ import lombok.*;
 import org.hibernate.annotations.processing.Find;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -18,12 +20,14 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column
-    private long numeroNational;
+    private String numeroNational;
     @Column
     private String nom;
     @Column
     private String prenom;
-    @OneToOne(mappedBy = "client")
+    @ManyToMany(mappedBy = "clients")
+    private Set<Livre> livres = new HashSet<>();
+    @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
     private AdresseClient adresseClient;
 
 }

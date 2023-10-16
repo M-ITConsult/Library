@@ -9,7 +9,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,21 +24,19 @@ static Scanner sc = new Scanner(System.in);
         Transaction tx;
 
             System.out.println("Création du client");
+            sc.nextLine();
             System.out.print("Entrez le numéro national: ");
-            long addNN = sc.nextLong();
+            String addNN = sc.nextLine();
             System.out.print("Entrez le nom: ");
-            String addName = sc.next();
+            String addName = sc.nextLine();
             System.out.print("Entrez le prénom: ");
-            String addLastName = sc.next();
+            String addLastName = sc.nextLine();
 
             Client client = new Client();
 
             client.setNumeroNational(addNN);
             client.setNom(addName);
             client.setPrenom(addLastName);
-
-
-            sc.nextLine(); // Add this line to clear the buffer
 
             System.out.println("Entrez les cordonnées");
             System.out.print("Entrez la rue: ");
@@ -44,8 +45,9 @@ static Scanner sc = new Scanner(System.in);
             int numRue = sc.nextInt();
             System.out.print("Entrez le code postal: ");
             int codePost = sc.nextInt();
+            sc.nextLine();
             System.out.print("Entrez la ville: ");
-            String ville = sc.next();
+            String ville = sc.nextLine();
 
             AdresseClient adresseClient = new AdresseClient();
 
@@ -118,26 +120,31 @@ static Scanner sc = new Scanner(System.in);
             sessionFactory.close();
         }
     }
-    public static void ConsulterListeClients() {
+    public static void DetailClient() {
         SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
         Session session = sessionFactory.openSession();
 
         Transaction tx;
 
+        // Affichage des clients
         List<Client> clients = session.createQuery("FROM Client", Client.class).getResultList();
+        clients.forEach(c -> System.out.printf("""
+                ID: %s
+                Numéro National: %s
+                Nom: %s
+                Prénom: %s%n
+                """, c.getId(), c.getNumeroNational(), c.getNom(), c.getPrenom()));
 
-        System.out.println("Liste des clients: \n");
-        for (Client client : clients) {
-            System.out.println("ID: " + client.getId());
-            System.out.println("Numéro National: " + client.getNumeroNational());
-            System.out.println("Nom: " + client.getNom());
-            System.out.println("Prénom: " + client.getPrenom());
-            System.out.println();
-        }
-
+        // Affichage des adresses
+        List<AdresseClient> adresseClients = session.createQuery("FROM AdresseClient", AdresseClient.class).getResultList();
+        adresseClients.forEach(ad -> System.out.printf("""
+                ID: %s
+                Adresse: %s %s%n%s %s%n
+                """, ad.getId(), ad.getRue(), ad.getNumero(), ad.getCp(), ad.getVille()));
         try {
             // Transaction Hibernate
             tx = session.beginTransaction();
+
 
             // Validation de la transaction
             tx.commit();
@@ -227,7 +234,7 @@ static Scanner sc = new Scanner(System.in);
             sessionFactory.close();
         }
     }
-    public static void ConsulterListeAuteur() {
+    public static void ListesAuteurs() {
 
         SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
         Session session = sessionFactory.openSession();
@@ -238,6 +245,7 @@ static Scanner sc = new Scanner(System.in);
 
         System.out.println("Liste des auteurs: \n");
         for (Auteur auteur : auteurs) {
+            System.out.println("ID: " + auteur.getId());
             System.out.println("Nom: " + auteur.getNom());
             System.out.println("Prénom: " + auteur.getPrenom());
             System.out.println();
@@ -284,7 +292,6 @@ static Scanner sc = new Scanner(System.in);
             livre.setISBN(isbnBook);
             livre.setTitre(titleBook);
             livre.setDateAchat(date);
-            livre.setAuteur_id(addAuthor);
 
             session.persist(auteur);
             session.persist(livre);
@@ -324,9 +331,9 @@ static Scanner sc = new Scanner(System.in);
         Livre livre = session.get(Livre.class, idBook);
         // Récupère l'auteur
         if (livre != null) {
-            for (Auteur auteur : livre.getAuteurList()) {
-                auteur.setLivre(null); // Dissocier l'auteur du livre
-            }
+//            for (Auteur auteur : livre.getAuteur(idBook)) {
+//                auteur.setLivre(null); // Dissocier l'auteur du livre
+//            }
         }
 
         try {
@@ -352,7 +359,7 @@ static Scanner sc = new Scanner(System.in);
             sessionFactory.close();
         }
     }
-    public static void ConsulterListeLivres() {
+    public static void ListesLivres() {
 
         SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
         Session session = sessionFactory.openSession();
@@ -365,9 +372,9 @@ static Scanner sc = new Scanner(System.in);
         System.out.println("Liste des livres: \n");
         for (Livre livre : livres) {
             System.out.printf("ISBN: %s%n",livre.getISBN());
-            for (Auteur auteur : auteurs) {
-                System.out.printf("Auteur: %s %s%n",auteur.getNom(),auteur.getPrenom());
-            }
+//            for (Auteur auteur : ) {
+//                System.out.printf("Auteur: %s %s%n",auteur.getNom(),auteur.getPrenom());
+//            }
             System.out.printf("Titre: %s%n", livre.getTitre());
             System.out.printf("Date d'achat: %s%n\n", livre.getDateAchat());
         }
@@ -391,7 +398,7 @@ static Scanner sc = new Scanner(System.in);
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
         while(true) {
             System.out.print("""
@@ -399,13 +406,13 @@ static Scanner sc = new Scanner(System.in);
                     Menu:
                     1. Ajouter un client
                     2. Supprimer un client
-                    3. Consulter la liste des clients
+                    3. Listes des clients
                     4. Ajouter un auteur
                     5. Supprimer un auteur
-                    6. Liste des auteurs
+                    6. Listes des auteurs
                     7. Ajouter un livre
                     8. Supprimer un livre
-                    9. Liste des livres
+                    9. Listes des livres
                     10. Quitter
                     Enter your choice:
                     """ );
@@ -414,13 +421,13 @@ static Scanner sc = new Scanner(System.in);
             switch (choice) {
                 case "1" -> AjouterUnClient();
                 case "2" -> SupprimerUnClient();
-                case "3" -> ConsulterListeClients();
+                case "3" -> DetailClient();
                 case "4" -> AjouterUnAuteur();
                 case "5" -> SupprimerUnAuteur();
-                case "6" -> ConsulterListeAuteur();
+                case "6" -> ListesAuteurs();
                 case "7" -> AjouterUnLivre();
                 case "8" -> SupprimerUnLivre();
-                case "9" -> ConsulterListeLivres();
+                case "9" -> ListesLivres();
                 case "10" -> {
                     System.out.println("Merci et aurevoir :)");
                     System.exit(0);
