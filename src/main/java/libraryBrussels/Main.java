@@ -292,6 +292,7 @@ static Scanner sc = new Scanner(System.in);
             livre.setISBN(isbnBook);
             livre.setTitre(titleBook);
             livre.setDateAchat(date);
+            livre.setAuteur(auteur);
 
             session.persist(auteur);
             session.persist(livre);
@@ -362,14 +363,14 @@ static Scanner sc = new Scanner(System.in);
 
         List<Livre> livres = session.createQuery("FROM Livre", Livre.class).getResultList();
 
+
         System.out.println("Liste des livres: \n");
         livres.forEach(l -> System.out.printf("""
                 ISBN: %s
                 Titre: %s
                 Date d'achat: %s
-                Auteur: %s%n
-                """, l.getISBN(), l.getTitre(), l.getDateAchat(), l.getAuteur()));
-
+                Auteur: %s %s%n
+                """, l.getISBN(), l.getTitre(), l.getDateAchat(), l.getAuteur().getNom(),l.getAuteur().getPrenom()));
         try {
             // Transaction Hibernate
             tx = session.beginTransaction();

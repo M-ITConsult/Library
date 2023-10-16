@@ -20,7 +20,7 @@ public class Auteur {
     private String prenom;
 
     @ManyToOne
-//    @JoinColumn(name = "livre_id")
+    @JoinColumn(name = "livre_id")
     @Embedded
     private Livre livre;
 
