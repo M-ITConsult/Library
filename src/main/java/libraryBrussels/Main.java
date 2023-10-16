@@ -244,12 +244,12 @@ static Scanner sc = new Scanner(System.in);
         List<Auteur> auteurs = session.createQuery("FROM Auteur", Auteur.class).getResultList();
 
         System.out.println("Liste des auteurs: \n");
-        for (Auteur auteur : auteurs) {
-            System.out.println("ID: " + auteur.getId());
-            System.out.println("Nom: " + auteur.getNom());
-            System.out.println("Prénom: " + auteur.getPrenom());
-            System.out.println();
-        }
+        auteurs.forEach(a -> System.out.printf("""
+                ID: %s
+                Nom: %s
+                Prénom: %s
+                Livres: %s%n
+                """, a.getId(),a.getNom(),a.getPrenom(),a.getLivre()));
 
         try {
             // Transaction Hibernate
@@ -323,18 +323,12 @@ static Scanner sc = new Scanner(System.in);
         Session session = sessionFactory.openSession();
         Transaction tx;
 
-        System.out.println("Suppression du livre lié à un auteur");
+        System.out.println("Suppression du livre");
         System.out.print("Entrez l'ID du livre: ");
         long idBook = sc.nextLong();
 
         // Récupère le livre
         Livre livre = session.get(Livre.class, idBook);
-        // Récupère l'auteur
-        if (livre != null) {
-//            for (Auteur auteur : livre.getAuteur(idBook)) {
-//                auteur.setLivre(null); // Dissocier l'auteur du livre
-//            }
-        }
 
         try {
 
@@ -367,17 +361,14 @@ static Scanner sc = new Scanner(System.in);
         Transaction tx;
 
         List<Livre> livres = session.createQuery("FROM Livre", Livre.class).getResultList();
-        List<Auteur> auteurs = session.createQuery("FROM Auteur", Auteur.class).getResultList();
 
         System.out.println("Liste des livres: \n");
-        for (Livre livre : livres) {
-            System.out.printf("ISBN: %s%n",livre.getISBN());
-//            for (Auteur auteur : ) {
-//                System.out.printf("Auteur: %s %s%n",auteur.getNom(),auteur.getPrenom());
-//            }
-            System.out.printf("Titre: %s%n", livre.getTitre());
-            System.out.printf("Date d'achat: %s%n\n", livre.getDateAchat());
-        }
+        livres.forEach(l -> System.out.printf("""
+                ISBN: %s
+                Titre: %s
+                Date d'achat: %s
+                Auteur: %s%n
+                """, l.getISBN(), l.getTitre(), l.getDateAchat(), l.getAuteur()));
 
         try {
             // Transaction Hibernate
