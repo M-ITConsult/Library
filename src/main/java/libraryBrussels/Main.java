@@ -123,8 +123,9 @@ static Scanner sc = new Scanner(System.in);
 
         Transaction tx;
 
-        // Affichage des clients
+        //Affichage des clients
         List<Client> clients = session.createQuery("FROM Client", Client.class).getResultList();
+
         clients.forEach(c -> System.out.printf("""
                 ID: %s
                 Numéro National: %s
@@ -132,7 +133,7 @@ static Scanner sc = new Scanner(System.in);
                 Prénom: %s%n
                 """, c.getId(), c.getNumeroNational(), c.getNom(), c.getPrenom()));
 
-        // Affichage des adresses
+        //Affichage des adresses
         List<AdresseClient> adresseClients = session.createQuery("FROM AdresseClient", AdresseClient.class).getResultList();
         adresseClients.forEach(ad -> System.out.printf("""
                 ID: %s
@@ -385,43 +386,6 @@ static Scanner sc = new Scanner(System.in);
             sessionFactory.close();
         }
     }
-    public static void LivresEmprunte() {
-
-        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
-        Session session = sessionFactory.openSession();
-
-        Transaction tx;
-
-        List<Client> emprunt = session.createQuery("SELECT DISTINCT c FROM Client c JOIN c.livres l", Client.class).getResultList();
-
-        System.out.println("Liste des livres empruntés: \n");
-        for (Client client : emprunt) {
-                System.out.printf("""
-                Emprunteur: %s %s%n
-                """, client.getPrenom(), client.getNom());
-
-                for (Livre livre : client.getLivres()) {
-                    System.out.printf("Livre: %s, ISBN - %d%n", livre.getTitre(), livre.getISBN());
-                }
-        }
-
-        try {
-            // Transaction Hibernate
-            tx = session.beginTransaction();
-
-            // Validation de la transaction
-            tx.commit();
-        } catch (Exception e) {
-            // En cas d'erreurs, annuler la transaction
-            if (session.getTransaction() !=null) {
-                session.getTransaction().rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            session.close();
-            sessionFactory.close();
-        }
-    }
     public static void EmprunteUnLivre() {
 
         SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
@@ -468,6 +432,44 @@ static Scanner sc = new Scanner(System.in);
             sessionFactory.close();
         }
     }
+    public static void LivresEmprunte() {
+
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+
+        Transaction tx;
+
+        List<Client> emprunt = session.createQuery("SELECT DISTINCT c FROM Client c JOIN c.livres l", Client.class).getResultList();
+
+        System.out.println("Liste des livres empruntés: \n");
+        for (Client client : emprunt) {
+                System.out.printf("""
+                Emprunteur: %s %s%n
+                """, client.getPrenom(), client.getNom());
+
+                for (Livre livre : client.getLivres()) {
+                    System.out.printf("Livre: %s, ISBN - %d%n", livre.getTitre(), livre.getISBN());
+                }
+        }
+
+        try {
+            // Transaction Hibernate
+            tx = session.beginTransaction();
+
+            // Validation de la transaction
+            tx.commit();
+        } catch (Exception e) {
+            // En cas d'erreurs, annuler la transaction
+            if (session.getTransaction() !=null) {
+                session.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
+        }
+    }
+
 
 
     public static void main(String[] args) throws SQLException {
@@ -488,8 +490,7 @@ static Scanner sc = new Scanner(System.in);
                     10. Emprunt d'un livre
                     11. Liste livres empruntés
                     12. Quitter
-                    Enter your choice:
-                    """ );
+                    Enter your choice:   """ );
             String choice = sc.next();
 
             switch (choice) {
@@ -505,7 +506,7 @@ static Scanner sc = new Scanner(System.in);
                 case "10" -> EmprunteUnLivre();
                 case "11" -> LivresEmprunte();
                 case "12" -> {
-                    System.out.println("Merci et aurevoir :)");
+                    System.out.println("Merci et au revoir :)");
                     System.exit(0);
                 }
                 default -> System.out.println("Invalid choice.");
