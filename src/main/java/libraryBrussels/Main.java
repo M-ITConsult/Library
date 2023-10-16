@@ -66,7 +66,7 @@ static Scanner sc = new Scanner(System.in);
 
             // Validation de la transaction
             tx.commit();
-            System.out.println("Enregistrements ajoutés avec succès!");
+            System.out.println("Client ajoutés avec succès!");
     } catch (Exception e) {
             // En cas d'erreurs, annuler la transaction
             if (session.getTransaction() !=null) {
@@ -407,7 +407,8 @@ static Scanner sc = new Scanner(System.in);
                     8. Supprimer un livre
                     9. Liste des livres
                     10. Quitter
-                    Enter your choice:""" );
+                    Enter your choice:
+                    """ );
             String choice = sc.next();
 
             switch (choice) {
