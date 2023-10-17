@@ -250,7 +250,7 @@ static Scanner sc = new Scanner(System.in);
         auteurs.forEach(a -> System.out.printf("""
                 ID: %s
                 Nom: %s
-                Prénom: %s
+                Prénom: %s%n
                 """, a.getId(),a.getNom(),a.getPrenom()));
 
         try {
