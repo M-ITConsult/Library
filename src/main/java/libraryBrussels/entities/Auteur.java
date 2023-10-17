@@ -21,7 +21,6 @@ public class Auteur {
 
     @ManyToOne
     @JoinColumn(name = "livre_id")
-    @Embedded
     private Livre livre;
 
     public Auteur(){}
