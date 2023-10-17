@@ -123,22 +123,27 @@ static Scanner sc = new Scanner(System.in);
 
         Transaction tx;
 
-        //Affichage des clients
-        List<Client> clients = session.createQuery("FROM Client", Client.class).getResultList();
+        String hql = "FROM Client";
+        String hql1 = "FROM AdresseClient";
+        List<Client> clients = session.createQuery(hql, Client.class).getResultList();
+        List<AdresseClient> adresseClients = session.createQuery(hql1, AdresseClient.class).getResultList();
 
-        clients.forEach(c -> System.out.printf("""
-                ID: %s
-                Numéro National: %s
-                Nom: %s
-                Prénom: %s%n
-                """, c.getId(), c.getNumeroNational(), c.getNom(), c.getPrenom()));
+            // Vérifier que le client et l'adresse ont la même ID
+            for (Client client : clients) {
+                for (AdresseClient adresseClient : adresseClients) {
+                    if (client.getId() == adresseClient.getId()) {
+                        System.out.printf("""
+                                        ID Client: %d
+                                        Numéro National: %s
+                                        Nom: %s
+                                        Prénom: %s
+                                        Adresse: %s %d, %d %s%n
+                                        """, client.getId(), client.getNumeroNational(), client.getNom(), client.getPrenom(),
+                                adresseClient.getRue(), adresseClient.getNumero(), adresseClient.getCp(), adresseClient.getVille());
+                    }
+                }
+            }
 
-        //Affichage des adresses
-        List<AdresseClient> adresseClients = session.createQuery("FROM AdresseClient", AdresseClient.class).getResultList();
-        adresseClients.forEach(ad -> System.out.printf("""
-                ID: %s
-                Adresse: %s %s%n%s %s%n
-                """, ad.getId(), ad.getRue(), ad.getNumero(), ad.getCp(), ad.getVille()));
         try {
             // Transaction Hibernate
             tx = session.beginTransaction();
