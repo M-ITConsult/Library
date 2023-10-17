@@ -251,8 +251,7 @@ static Scanner sc = new Scanner(System.in);
                 ID: %s
                 Nom: %s
                 Prénom: %s
-                Livres: %s%n
-                """, a.getId(),a.getNom(),a.getPrenom(),a.getLivre()));
+                """, a.getId(),a.getNom(),a.getPrenom()));
 
         try {
             // Transaction Hibernate
