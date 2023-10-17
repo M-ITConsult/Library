@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
@@ -368,11 +369,12 @@ static Scanner sc = new Scanner(System.in);
 
         System.out.println("Liste des livres: \n");
         livres.forEach(l -> System.out.printf("""
+                ID: %s
                 ISBN: %s
                 Titre: %s
                 Date d'achat: %s
                 Auteur: %s %s%n
-                """, l.getISBN(), l.getTitre(), l.getDateAchat(), l.getAuteur().getNom(),l.getAuteur().getPrenom()));
+                """, l.getId(), l.getISBN(), l.getTitre(), l.getDateAchat(), l.getAuteur().getNom(),l.getAuteur().getPrenom()));
         try {
             // Transaction Hibernate
             tx = session.beginTransaction();
@@ -412,7 +414,7 @@ static Scanner sc = new Scanner(System.in);
 
             livre.getClients().add(client);
 
-            System.out.printf("Livre emprunté par %s %s",client.getPrenom(),client.getNom());
+            System.out.printf("Livre emprunté par %s %s%n",client.getPrenom(),client.getNom());
         } else {
             System.out.println("Client ou Livre non trouvé.");
         }
@@ -452,8 +454,52 @@ static Scanner sc = new Scanner(System.in);
                 """, client.getPrenom(), client.getNom());
 
                 for (Livre livre : client.getLivres()) {
-                    System.out.printf("Livre: %s, ISBN - %d%n", livre.getTitre(), livre.getISBN());
+                    System.out.printf("Livre: %s, ISBN - %d%n\n", livre.getTitre(), livre.getISBN());
                 }
+        }
+
+        try {
+            // Transaction Hibernate
+            tx = session.beginTransaction();
+
+            // Validation de la transaction
+            tx.commit();
+        } catch (Exception e) {
+            // En cas d'erreurs, annuler la transaction
+            if (session.getTransaction() !=null) {
+                session.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
+        }
+    }
+    public static void EmpruntRendu() {
+
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+
+        Transaction tx;
+
+        System.out.print("Sélectionné l'ID du client qui à emprunté le livre: ");
+        long idCust = sc.nextLong();
+
+        Client client = session.get(Client.class, idCust);
+
+        System.out.print("Entrez l'ID du livre emprunté: ");
+        long idBook = sc.nextLong();
+        sc.nextLine();
+
+        Livre livre = session.get(Livre.class, idBook);
+
+        if (client != null && livre != null) {
+
+            livre.getClients().remove(client);
+
+            System.out.printf("Livre rendu par %s %s%n",client.getPrenom(),client.getNom());
+        } else {
+            System.out.println("Client ou Livre non trouvé.");
         }
 
         try {
@@ -493,8 +539,9 @@ static Scanner sc = new Scanner(System.in);
                     9. Listes des livres
                     10. Emprunt d'un livre
                     11. Liste livres empruntés
-                    12. Quitter
-                    Enter your choice:   """ );
+                    12. Emprunt à remettre
+                    13. Quitter
+                    Enter your choice:  """ );
             String choice = sc.next();
 
             switch (choice) {
@@ -509,7 +556,8 @@ static Scanner sc = new Scanner(System.in);
                 case "9" -> ListesLivres();
                 case "10" -> EmprunteUnLivre();
                 case "11" -> LivresEmprunte();
-                case "12" -> {
+                case "12" -> EmpruntRendu();
+                case "13" -> {
                     System.out.println("Merci et au revoir :)");
                     System.exit(0);
                 }
