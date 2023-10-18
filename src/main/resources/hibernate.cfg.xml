@@ -25,6 +25,7 @@
         </property>
 
         <!-- Drop and re-create the database schema on startup -->
+        <!-- Change to create for "create" all the tables then change to "update" after that -->
         <property name="hbm2ddl.auto">update</property>
 
         <!-- Mapping des classes-->
