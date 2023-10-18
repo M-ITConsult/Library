@@ -479,7 +479,7 @@ static Transaction tx;
 
 
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
 
         while(true) {
             System.out.print("""
