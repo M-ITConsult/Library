@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    // Scanner
+    // Import du Scanner
 static Scanner sc = new Scanner(System.in);
 
     // Session Hibernate
