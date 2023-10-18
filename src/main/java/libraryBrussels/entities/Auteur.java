@@ -3,9 +3,6 @@ package libraryBrussels.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
-
 @Entity
 @Setter
 @Getter
