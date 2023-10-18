@@ -17,12 +17,10 @@ public class Main {
     // Import du Scanner
 static Scanner sc = new Scanner(System.in);
 
-    // Session Hibernate
-static SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
-static Session session = sessionFactory.openSession();
-static Transaction tx;
-
     public static void AjouterUnClient() {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx;
 
             System.out.println("Création du client");
             sc.nextLine();
@@ -76,9 +74,15 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
         }
     }
     public static void SupprimerUnClient() {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx;
 
         System.out.println("Suppression du client et de son adresse");
         System.out.print("Entrez l'ID du client à supprimer: ");
@@ -110,9 +114,15 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
         }
     }
     public static void DetailClient() {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx;
 
         String hql = "FROM Client";
         String hql1 = "FROM AdresseClient";
@@ -148,9 +158,15 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
         }
     }
     public static void AjouterUnAuteur() {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx;
 
         System.out.println("Création de l'auteur");
         System.out.print("Entrez le nom: ");
@@ -180,9 +196,15 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
         }
     }
     public static void SupprimerUnAuteur() {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx;
 
         System.out.println("Suppression de l'auteur");
         System.out.print("Entrez l'ID de l'auteur à supprimer: ");
@@ -210,9 +232,15 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
         }
     }
     public static void ListesAuteurs() {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx;
 
         List<Auteur> auteurs = session.createQuery("FROM Auteur", Auteur.class).getResultList();
 
@@ -235,9 +263,15 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
         }
     }
     public static void AjouterUnLivre() {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx;
 
         System.out.print("Entrez l'ID de l'auteur à ajouter au livre: ");
         int addAuthor = sc.nextInt();
@@ -279,9 +313,15 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
         }
     }
     public static void SupprimerUnLivre() {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx;
 
         System.out.println("Suppression du livre");
         System.out.print("Entrez l'ID du livre: ");
@@ -308,9 +348,15 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
         }
     }
     public static void ListesLivres() {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx;
 
         List<Livre> livres = session.createQuery("FROM Livre", Livre.class).getResultList();
 
@@ -335,9 +381,15 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
         }
     }
     public static void EmprunteUnLivre() {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx;
 
         System.out.print("Sélectionné l'ID du client qui emprunte le livre: ");
         long idCust = sc.nextLong();
@@ -373,9 +425,15 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
         }
     }
     public static void LivresEmprunte() {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx;
 
         List<Client> emprunt = session.createQuery("SELECT DISTINCT c FROM Client c JOIN c.livres l", Client.class).getResultList();
 
@@ -402,9 +460,15 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
         }
     }
     public static void EmpruntRendu() {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx;
 
         System.out.print("Sélectionné l'ID du client qui à emprunté le livre: ");
         long idCust = sc.nextLong();
@@ -438,10 +502,11 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
         }
     }
-
-
 
     public static void main(String[] args) {
 
@@ -481,8 +546,6 @@ static Transaction tx;
                 case "13" -> {
                     System.out.println("Merci et au revoir :)");
                     System.exit(0);
-                    session.close();
-                    sessionFactory.close();
                 }
                 default -> System.out.println("Invalid choice.");
             }
