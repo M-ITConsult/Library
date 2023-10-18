@@ -8,7 +8,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
@@ -514,6 +513,7 @@ static Scanner sc = new Scanner(System.in);
             System.out.print("""
                     
                     Menu:
+                    
                     1. Ajouter un client
                     2. Supprimer un client
                     3. Listes des clients
@@ -527,7 +527,8 @@ static Scanner sc = new Scanner(System.in);
                     11. Liste livres empruntés
                     12. Emprunt à remettre
                     13. Quitter
-                    Enter your choice:  """ );
+                    
+                    Enter your choice:""" );
             String choice = sc.next();
 
             switch (choice) {
