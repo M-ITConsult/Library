@@ -76,9 +76,6 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
-            sessionFactory.close();
         }
     }
     public static void SupprimerUnClient() {
@@ -113,9 +110,6 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
-            sessionFactory.close();
         }
     }
     public static void DetailClient() {
@@ -154,9 +148,6 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
-            sessionFactory.close();
         }
     }
     public static void AjouterUnAuteur() {
@@ -189,9 +180,6 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
-            sessionFactory.close();
         }
     }
     public static void SupprimerUnAuteur() {
@@ -222,9 +210,6 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
-            sessionFactory.close();
         }
     }
     public static void ListesAuteurs() {
@@ -250,9 +235,6 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
-            sessionFactory.close();
         }
     }
     public static void AjouterUnLivre() {
@@ -293,13 +275,10 @@ static Transaction tx;
             tx.commit();
         } catch (Exception e) {
             // En cas d'erreurs, annuler la transaction
-            if (session.getTransaction() !=null) {
+            if (session.getTransaction() != null) {
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
-            sessionFactory.close();
         }
     }
     public static void SupprimerUnLivre() {
@@ -329,9 +308,6 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
-            sessionFactory.close();
         }
     }
     public static void ListesLivres() {
@@ -359,9 +335,6 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
-            sessionFactory.close();
         }
     }
     public static void EmprunteUnLivre() {
@@ -400,9 +373,6 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
-            sessionFactory.close();
         }
     }
     public static void LivresEmprunte() {
@@ -432,9 +402,6 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
-            sessionFactory.close();
         }
     }
     public static void EmpruntRendu() {
@@ -471,9 +438,6 @@ static Transaction tx;
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.close();
-            sessionFactory.close();
         }
     }
 
@@ -517,6 +481,8 @@ static Transaction tx;
                 case "13" -> {
                     System.out.println("Merci et au revoir :)");
                     System.exit(0);
+                    session.close();
+                    sessionFactory.close();
                 }
                 default -> System.out.println("Invalid choice.");
             }
